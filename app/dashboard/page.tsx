@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { useAuth } from "@/components/contexts/AuthContext";
+import supabase from "@/supabase";
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
@@ -23,6 +24,16 @@ export default function Dashboard() {
       router.push("/login");
     }
   }, [user, router]);
+
+  const getProducts = async () => {
+    let { data: products, error } = await supabase.from("products").select("*");
+
+    console.log(products);
+  };
+
+  useEffect(() => {
+    getProducts();
+  }, []);
 
   const handleSignOut = async () => {
     try {
