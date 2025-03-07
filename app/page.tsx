@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import ProductCard from "@/components/product-card";
 import {
   ShoppingCart,
   Search,
@@ -47,19 +47,19 @@ export default function Home() {
           <ProductCard
             name="Organic Bananas"
             price={4.99}
-            image="/placeholder.svg?height=150&width=150"
+            image="/products/banana.png"
             unit="1 bunch"
           />
           <ProductCard
             name="Fresh Broccoli"
             price={3.0}
-            image="/placeholder.svg?height=150&width=150"
+            image="/products/brocoli.png"
             unit="1 head"
           />
           <ProductCard
             name="Organic Lemons"
             price={2.22}
-            image="/placeholder.svg?height=150&width=150"
+            image="/products/lime.png"
             unit="4 pieces"
           />
         </div>
@@ -104,52 +104,22 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <FarmerCard
             name="Joe Smith"
-            image="/placeholder.svg?height=200&width=200"
+            image="/testimonials/joe-smith.png"
             location="California"
           />
           <FarmerCard
             name="Anna Cooper"
-            image="/placeholder.svg?height=200&width=200"
+            image="/testimonials/anna-cooper.png"
             location="Oregon"
           />
           <FarmerCard
             name="Tad Santiago"
-            image="/placeholder.svg?height=200&width=200"
+            image="/testimonials/tad-santiago.png"
             location="Washington"
           />
         </div>
       </section>
     </>
-  );
-}
-
-function ProductCard({
-  name,
-  price,
-  image,
-  unit,
-}: {
-  name: string;
-  price: number;
-  image: string;
-  unit: string;
-}) {
-  return (
-    <div className="bg-white rounded-lg overflow-hidden border border-gray-200 flex flex-col">
-      <div className="p-4 flex-1 flex flex-col">
-        <div className="relative h-32 w-full mb-4">
-          <Image src={image || ""} alt={name} fill className="object-contain" />
-        </div>
-        <h3 className="font-semibold text-gray-800">{name}</h3>
-        <p className="text-sm text-gray-500 mb-2">{unit}</p>
-        <div className="mt-auto flex items-center justify-between">
-          <span className="font-bold text-gray-800">${price.toFixed(2)}</span>
-          <button className="bg-white border border-green-500 rounded-full p-1 text-green-500 hover:bg-green-500 hover:text-white transition-colors">
-            <Plus className="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -163,8 +133,8 @@ function FarmerCard({
   location: string;
 }) {
   return (
-    <div className="bg-white rounded-lg overflow-hidden border border-gray-200">
-      <div className="relative h-48 w-full">
+    <div className=" rounded-lg overflow-hidden border border-gray-200">
+      <div className="relative h-96 w-full">
         <Image
           src={image || "/placeholder.svg"}
           alt={name}

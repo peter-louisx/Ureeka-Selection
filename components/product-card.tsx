@@ -12,7 +12,7 @@ export default function ProductCard({
   unit: string;
 }) {
   return (
-    <div className="bg-white rounded-lg overflow-hidden border border-gray-200 flex flex-col">
+    <div className="rounded-lg overflow-hidden border border-gray-200 flex flex-col">
       <div className="p-4 flex-1 flex flex-col">
         <div className="relative h-32 w-full mb-4">
           <Image src={image || ""} alt={name} fill className="object-contain" />
