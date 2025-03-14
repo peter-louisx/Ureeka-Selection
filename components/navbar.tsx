@@ -25,8 +25,6 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  console.log(session);
-
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;

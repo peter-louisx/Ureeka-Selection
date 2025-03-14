@@ -44,11 +44,10 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          <ProductCard
+          {/* <ProductCard
             name="Organic Bananas"
             price={4.99}
             image="/products/banana.png"
-            unit="1 bunch"
           />
           <ProductCard
             name="Fresh Broccoli"
@@ -61,7 +60,7 @@ export default function Home() {
             price={2.22}
             image="/products/lime.png"
             unit="4 pieces"
-          />
+          /> */}
         </div>
       </section>
 

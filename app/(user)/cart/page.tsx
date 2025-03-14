@@ -1,47 +1,26 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Minus, Plus, ShoppingCart, Trash2, X } from "lucide-react";
-
-// Sample cart items
-const cartItems = [
-  {
-    id: 1,
-    name: "Organic Bananas",
-    price: 4.99,
-    quantity: 2,
-    image: "/placeholder.svg?height=100&width=100",
-    unit: "bunch",
-  },
-  {
-    id: 2,
-    name: "Fresh Broccoli",
-    price: 3.0,
-    quantity: 1,
-    image: "/placeholder.svg?height=100&width=100",
-    unit: "head",
-  },
-  {
-    id: 3,
-    name: "Organic Lemons",
-    price: 2.22,
-    quantity: 3,
-    image: "/placeholder.svg?height=100&width=100",
-    unit: "4 pieces",
-  },
-];
+import { useState, useEffect } from "react";
+import supabase from "@/supabase";
+import { useAuth } from "@/components/contexts/AuthContext";
+import { set } from "react-hook-form";
+import { toast } from "sonner";
 
 // Sample shipping options
 const shippingOptions = [
   {
     id: "standard",
     name: "Standard Shipping",
-    price: 5.99,
+    price: 10000,
     description: "3-5 business days",
   },
   {
     id: "express",
     name: "Express Shipping",
-    price: 12.99,
+    price: 20000,
     description: "1-2 business days",
   },
   {
@@ -53,6 +32,18 @@ const shippingOptions = [
 ];
 
 export default function CartPage() {
+  const { user } = useAuth();
+
+  const [cartItems, setCartItems] = useState<
+    {
+      id: number;
+      name: string;
+      price: number;
+      quantity: number;
+      image: string;
+    }[]
+  >([]);
+
   // Calculate cart totals
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
@@ -61,6 +52,75 @@ export default function CartPage() {
   const shipping = subtotal >= 50 ? 0 : 5.99;
   const tax = subtotal * 0.08; // 8% tax rate
   const total = subtotal + shipping + tax;
+
+  useEffect(() => {
+    async function fetchCartItems() {
+      if (user) {
+        let { data, error } = await supabase
+          .from("cart")
+          .select("products(id, name, image, price), quantity")
+          .eq("user_id", user.id);
+
+        if (data) {
+          setCartItems(
+            data.map((item) => {
+              return {
+                //@ts-ignore
+                id: item.products.id,
+                //@ts-ignore
+
+                name: item.products.name,
+                //@ts-ignore
+
+                price: item.products.price,
+                quantity: item.quantity,
+                //@ts-ignore
+
+                image: item.products.image,
+              };
+            }) || []
+          );
+        }
+      }
+    }
+
+    fetchCartItems();
+  }, []);
+
+  const handleRemoveItem = async (productId: number) => {
+    if (user) {
+      let { error } = await supabase
+        .from("cart")
+        .delete()
+        .eq("user_id", user.id)
+        .eq("product_id", productId);
+
+      if (error) {
+        toast.error("An error occurred while removing the item from cart");
+      } else {
+        toast.success("Item removed from cart");
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item.id !== productId)
+        );
+      }
+    }
+  };
+
+  const removeAllItems = async () => {
+    if (user) {
+      let { error } = await supabase
+        .from("cart")
+        .delete()
+        .eq("user_id", user.id);
+
+      if (error) {
+        toast.error("An error occurred while clearing the cart");
+      } else {
+        toast.success("Cart cleared successfully");
+        setCartItems([]);
+      }
+    }
+  };
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -109,10 +169,11 @@ export default function CartPage() {
                           <h3 className="hidden md:block font-medium text-gray-800">
                             {item.name}
                           </h3>
-                          <p className="mt-1 text-sm text-gray-500">
-                            {item.unit}
-                          </p>
-                          <button className="hidden md:inline-block mt-1 text-xs text-red-500 hover:text-red-700">
+
+                          <button
+                            className="hidden md:inline-block mt-1 text-xs text-red-500 hover:text-red-700"
+                            onClick={() => handleRemoveItem(item.id)}
+                          >
                             <Trash2 className="h-3 w-3 inline mr-1" />
                             Remove
                           </button>
@@ -125,7 +186,7 @@ export default function CartPage() {
                           Price:
                         </span>
                         <span className="font-medium">
-                          ${item.price.toFixed(2)}
+                          Rp. {item.price.toLocaleString("id-ID")}
                         </span>
                       </div>
 
@@ -153,7 +214,8 @@ export default function CartPage() {
                           Total:
                         </span>
                         <span className="font-medium">
-                          ${(item.price * item.quantity).toFixed(2)}
+                          Rp.{" "}
+                          {(item.price * item.quantity).toLocaleString("id-ID")}
                         </span>
                       </div>
                     </div>
@@ -169,7 +231,10 @@ export default function CartPage() {
                   <ArrowLeft className="mr-2 h-4 w-4" />
                   Continue Shopping
                 </Link>
-                <button className="text-sm text-red-500 hover:text-red-700">
+                <button
+                  className="text-sm text-red-500 hover:text-red-700"
+                  onClick={removeAllItems}
+                >
                   <Trash2 className="inline h-4 w-4 mr-1" />
                   Clear Cart
                 </button>
@@ -185,7 +250,9 @@ export default function CartPage() {
                 <div className="p-4 space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">
+                      Rp. {subtotal.toLocaleString("id-ID")}
+                    </span>
                   </div>
 
                   {/* Shipping Options */}
@@ -205,9 +272,11 @@ export default function CartPage() {
                             className="mt-1 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300"
                           />
                           <div className="ml-2">
-                            <div className="flex justify-between text-sm">
+                            <div className="flex  text-sm gap-1">
                               <span className="font-medium">{option.name}</span>
-                              <span>${option.price.toFixed(2)}</span>
+                              <span>
+                                Rp. {option.price.toLocaleString("id-ID")}
+                              </span>
                             </div>
                             <p className="text-xs text-gray-500">
                               {option.description}
@@ -220,14 +289,16 @@ export default function CartPage() {
 
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Tax (8%)</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
+                    <span className="font-medium">
+                      Rp. {tax.toLocaleString("id-ID")}
+                    </span>
                   </div>
 
                   <div className="pt-2 border-t border-gray-200">
                     <div className="flex justify-between">
                       <span className="font-medium">Total</span>
                       <span className="font-bold text-lg">
-                        ${total.toFixed(2)}
+                        Rp. {total.toLocaleString("id-ID")}
                       </span>
                     </div>
                   </div>
@@ -235,16 +306,6 @@ export default function CartPage() {
                   <button className="w-full mt-4 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium">
                     Proceed to Checkout
                   </button>
-
-                  <div className="pt-4 text-xs text-gray-500">
-                    <p>We accept:</p>
-                    <div className="flex space-x-2 mt-2">
-                      <div className="h-6 w-10 bg-gray-200 rounded"></div>
-                      <div className="h-6 w-10 bg-gray-200 rounded"></div>
-                      <div className="h-6 w-10 bg-gray-200 rounded"></div>
-                      <div className="h-6 w-10 bg-gray-200 rounded"></div>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -262,9 +323,9 @@ export default function CartPage() {
           </div>
         ) : (
           <div className="text-center py-12">
-            <div className="relative h-24 w-24 mx-auto mb-6">
+            <div className="relative h-60 w-60 mx-auto mb-6">
               <Image
-                src="/placeholder.svg?height=96&width=96"
+                src="https://vesvlvykfnkqxtpekfbn.supabase.co/storage/v1/object/public/assets//undraw_empty-cart_574u.svg"
                 alt="Empty cart"
                 fill
                 className="object-contain"
