@@ -17,6 +17,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import * as z from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuth } from "./contexts/AuthContext";
+import supabase from "@/supabase";
 
 const formSchema = z.object({
   rating: z.number().min(1, "Please select a rating").max(5),
@@ -32,8 +36,10 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-export default function ReviewForm() {
+export default function ReviewForm({ productId }: { productId: string }) {
+  const { user } = useAuth();
   const [hoveredRating, setHoveredRating] = useState(0);
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,19 +50,23 @@ export default function ReviewForm() {
     },
   });
 
-  function onSubmit(data: FormValues) {
-    console.log("Review submitted:", data);
-    // In a real app, you would send this to your API
+  async function onSubmit(data: FormValues) {
+    await supabase.from("product_review").insert({
+      product_id: productId,
+      rating: data.rating,
+      title: data.title,
+      content: data.content,
+      user_id: user?.id,
+    });
 
-    // Reset the form
     form.reset({
       rating: 0,
       title: "",
       content: "",
     });
 
-    // Show success message
-    alert("Thank you for your review!");
+    toast.success("Review submitted successfully!");
+    router.refresh();
   }
 
   return (

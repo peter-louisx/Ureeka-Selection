@@ -61,6 +61,8 @@ export default function CartPage() {
           .select("products(id, name, image, price), quantity")
           .eq("user_id", user.id);
 
+        console.log(data);
+
         if (data) {
           setCartItems(
             data.map((item) => {
@@ -103,6 +105,71 @@ export default function CartPage() {
           prevItems.filter((item) => item.id !== productId)
         );
       }
+    }
+  };
+
+  const updateQuantity = async (productId: number, quantity: number) => {
+    if (user) {
+      let { error } = await supabase
+        .from("cart")
+        .update({
+          quantity: quantity,
+        })
+        .eq("user_id", user.id)
+        .eq("product_id", productId);
+
+      if (error) {
+        toast.error("An error occurred while updating the item quantity");
+      } else {
+        toast.success("Item quantity updated successfully");
+        setCartItems((prevItems) =>
+          prevItems.map((item) =>
+            item.id === productId ? { ...item, quantity } : item
+          )
+        );
+      }
+    }
+  };
+
+  const handleCheckout = async () => {
+    if (user) {
+      const { data: allItems, error } = await supabase
+        .from("cart")
+        .select("products(id), quantity")
+        .eq("user_id", user.id);
+
+      if (error) {
+        toast.error("An error occurred while fetching cart items");
+        return;
+      }
+
+      if (allItems.length === 0) {
+        toast.error("No items in the cart to checkout");
+        return;
+      }
+
+      const items = allItems.map((item) => ({
+        //@ts-ignore
+        product_id: item.products.id,
+        quantity: item.quantity,
+      }));
+
+      items.forEach(async (item) => {
+        const { error } = await supabase.from("order_history").insert({
+          user_id: user.id,
+          product_id: item.product_id,
+          quantity: item.quantity,
+        });
+
+        if (error) {
+          toast.error("An error occurred while creating the order");
+        }
+      });
+
+      await supabase.from("cart").delete().eq("user_id", user.id);
+
+      toast.success("Order placed successfully");
+      setCartItems([]);
     }
   };
 
@@ -150,7 +217,10 @@ export default function CartPage() {
                         <h3 className="font-medium text-gray-800">
                           {item.name}
                         </h3>
-                        <button className="text-gray-400 hover:text-red-500">
+                        <button
+                          className="text-gray-400 hover:text-red-500"
+                          onClick={() => handleRemoveItem(item.id)}
+                        >
                           <X className="h-5 w-5" />
                         </button>
                       </div>
@@ -196,13 +266,25 @@ export default function CartPage() {
                           Quantity:
                         </span>
                         <div className="flex items-center border border-gray-300 rounded-md">
-                          <button className="px-2 py-1 text-gray-600 hover:text-green-600">
+                          <button
+                            className="px-2 py-1 text-gray-600 hover:text-green-600"
+                            onClick={() => {
+                              if (item.quantity > 1) {
+                                updateQuantity(item.id, item.quantity - 1);
+                              }
+                            }}
+                          >
                             <Minus className="h-3 w-3" />
                           </button>
                           <span className="px-2 py-1 text-sm">
                             {item.quantity}
                           </span>
-                          <button className="px-2 py-1 text-gray-600 hover:text-green-600">
+                          <button
+                            className="px-2 py-1 text-gray-600 hover:text-green-600"
+                            onClick={() =>
+                              updateQuantity(item.id, item.quantity + 1)
+                            }
+                          >
                             <Plus className="h-3 w-3" />
                           </button>
                         </div>
@@ -303,7 +385,10 @@ export default function CartPage() {
                     </div>
                   </div>
 
-                  <button className="w-full mt-4 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium">
+                  <button
+                    className="w-full mt-4 py-2 px-4 bg-green-600 hover:bg-green-700 text-white rounded-md font-medium"
+                    onClick={handleCheckout}
+                  >
                     Proceed to Checkout
                   </button>
                 </div>

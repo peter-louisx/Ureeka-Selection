@@ -172,17 +172,15 @@ export default function Navbar() {
                   Sign In
                 </Link>
               )}
-            </nav>
-            {session && (
-              <div className="flex items-center space-x-4">
+              {session && (
                 <Link
                   href="/cart"
                   className="relative text-gray-600 hover:text-green-600"
                 >
                   <ShoppingCart className="h-5 w-5" />
                 </Link>
-              </div>
-            )}
+              )}
+            </nav>
           </div>
         </header>
       )}

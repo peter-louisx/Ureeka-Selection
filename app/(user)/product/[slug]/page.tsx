@@ -105,6 +105,20 @@ export default function ProductDetailPage({
   });
 
   const [quantity, setQuantity] = useState(1);
+  const [canReview, setCanReview] = useState(false);
+  const [reviews, setReviews] = useState<
+    {
+      id: string;
+      title: string;
+      content: string;
+      rating: number;
+      date: string;
+      helpfulCount: number;
+      notHelpfulCount: number;
+      avatar: string;
+      name: string;
+    }[]
+  >([]);
 
   const fetchProduct = async () => {
     const { data, error } = await supabase
@@ -124,6 +138,35 @@ export default function ProductDetailPage({
       setInCart(true);
     }
 
+    const { data: reviewCheck } = await supabase
+      .from("order_history")
+      .select("*")
+      .eq("user_id", user?.id)
+      .eq("product_id", data.id)
+      .single();
+
+    if (reviewCheck) {
+      setCanReview(true);
+    }
+
+    const { data: reviewsData } = await supabase
+      .from("product_review")
+      .select("id, title, content, rating")
+      .eq("product_id", data.id);
+
+    if (reviewsData) {
+      //@ts-ignore
+      setReviews(
+        reviewsData.map((review) => ({
+          ...review,
+          avatar: "/placeholder.svg?height=40&width=40",
+          name: "****",
+          helpfulCount: 0,
+          notHelpfulCount: 0,
+          date: "March 15, 2023",
+        }))
+      );
+    }
     setProduct({
       id: data.id,
       name: data.name,
@@ -139,6 +182,8 @@ export default function ProductDetailPage({
       },
     });
   };
+
+  const fetchReview = async () => {};
 
   const addToCart = async () => {
     if (user) {
@@ -162,6 +207,7 @@ export default function ProductDetailPage({
 
   useEffect(() => {
     fetchProduct().then(() => setLoading(false));
+    fetchReview();
   }, []);
 
   return (
@@ -495,9 +541,9 @@ export default function ProductDetailPage({
                 ))}
               </div>
 
-              {session && (
+              {canReview && (
                 <div className="mt-8">
-                  <ReviewForm />
+                  <ReviewForm productId={product.id} />
                 </div>
               )}
             </div>
