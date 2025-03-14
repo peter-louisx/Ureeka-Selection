@@ -79,7 +79,7 @@ export default function FarmerLoginPage() {
             <CardHeader className="text-center">
               <Link href="/" className="inline-block">
                 <CardTitle className="text-2xl font-bold text-gray-800">
-                  CropSync
+                  CropFresh
                 </CardTitle>
               </Link>
               <CardDescription className="text-sm text-gray-600 mt-2">
@@ -166,7 +166,7 @@ export default function FarmerLoginPage() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              © 2023 CropSync. All rights reserved.
+              © 2023 CropFresh. All rights reserved.
             </p>
           </div>
         </div>

@@ -112,7 +112,7 @@ export default function SignUpPage() {
           <CardHeader className="text-center">
             <Link href="/" className="inline-block">
               <CardTitle className="text-2xl font-bold text-gray-800">
-                CropSync
+                CropFresh
               </CardTitle>
             </Link>
             <CardDescription className="text-sm text-gray-600 mt-2">

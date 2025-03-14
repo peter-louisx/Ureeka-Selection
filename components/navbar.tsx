@@ -25,6 +25,8 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
+  console.log(session);
+
   const handleSignOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
@@ -42,7 +44,7 @@ export default function Navbar() {
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <Link href="/" className="text-xl font-bold text-gray-800">
-                  CropSync
+                  CropFresh
                 </Link>
                 <span className="ml-2 text-sm text-gray-500">
                   Farmer Portal

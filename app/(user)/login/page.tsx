@@ -57,13 +57,9 @@ export default function LoginPage() {
         email: values.email,
         password: values.password,
       });
-
-      if (error) throw error;
-
       toast("Login successful");
 
-      // Redirect to dashboard or home page after successful login
-      router.push("/dashboard");
+      router.push("/products");
     } catch (error) {
       toast.error("error while logging in");
     } finally {

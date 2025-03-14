@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -18,8 +20,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import ReviewForm from "@/components/review-form";
+import { useAuth } from "@/components/contexts/AuthContext";
 
-// This would typically come from a database or API
 const product = {
   id: "organic-banana",
   name: "Organic Banana",
@@ -55,35 +57,6 @@ const product = {
   },
 };
 
-// Related products
-const relatedProducts = [
-  {
-    id: 1,
-    name: "Organic Apples",
-    price: 3.49,
-    image: "/placeholder.svg?height=150&width=150",
-  },
-  {
-    id: 2,
-    name: "Fresh Strawberries",
-    price: 4.99,
-    image: "/placeholder.svg?height=150&width=150",
-  },
-  {
-    id: 3,
-    name: "Organic Blueberries",
-    price: 5.99,
-    image: "/placeholder.svg?height=150&width=150",
-  },
-  {
-    id: 4,
-    name: "Green Grapes",
-    price: 3.99,
-    image: "/placeholder.svg?height=150&width=150",
-  },
-];
-
-// Sample reviews
 const reviews = [
   {
     id: 1,
@@ -160,58 +133,10 @@ function ProductCard({
 }
 
 export default function ProductDetailPage() {
+  const { session } = useAuth();
+
   return (
     <div className="flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 bg-white border-b">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center">
-            <Link href="/" className="text-xl font-bold text-gray-800">
-              CropSync
-            </Link>
-          </div>
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link
-              href="/"
-              className="text-sm font-medium text-gray-600 hover:text-green-600"
-            >
-              Home
-            </Link>
-            <Link
-              href="/products"
-              className="text-sm font-medium text-gray-800 hover:text-green-600"
-            >
-              Products
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-gray-600 hover:text-green-600"
-            >
-              About
-            </Link>
-            <Link
-              href="/sign-in"
-              className="text-sm font-medium text-gray-600 hover:text-green-600"
-            >
-              Sign In
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <Link
-              href="/cart"
-              className="relative text-gray-600 hover:text-green-600"
-            >
-              <ShoppingCart className="h-5 w-5" />
-              <Badge
-                variant="destructive"
-                className="absolute -top-1 -right-1 h-4 w-4 p-0 flex items-center justify-center"
-              >
-                2
-              </Badge>
-            </Link>
-          </div>
-        </div>
-      </header>
-
       <main className="flex-1 container mx-auto px-4 py-8">
         {/* Breadcrumb */}
         <nav className="flex mb-6 text-sm">
@@ -467,10 +392,6 @@ export default function ProductDetailPage() {
                     {product.reviewCount} customer reviews
                   </p>
                 </div>
-
-                <div className="mt-4 md:mt-0">
-                  <Button>Write a Review</Button>
-                </div>
               </div>
 
               {/* Rating Breakdown */}
@@ -591,130 +512,13 @@ export default function ProductDetailPage() {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div className="flex justify-center mt-8">
-            <nav
-              className="inline-flex rounded-md shadow-sm -space-x-px"
-              aria-label="Pagination"
-            >
-              <Button variant="outline" size="icon" className="rounded-l-md">
-                <span className="sr-only">Previous</span>
-                <svg
-                  className="h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
-              <Button
-                variant="outline"
-                className="bg-green-50 text-green-600 border-green-500"
-              >
-                1
-              </Button>
-              <Button variant="outline">2</Button>
-              <Button variant="outline">3</Button>
-              <Button variant="outline" size="icon" className="rounded-r-md">
-                <span className="sr-only">Next</span>
-                <svg
-                  className="h-5 w-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Button>
-            </nav>
-          </div>
-
-          {/* Write a Review Form */}
-          <div className="mt-8">
-            <ReviewForm />
-          </div>
-        </div>
-
-        {/* Related Products */}
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            You May Also Like
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {relatedProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                name={product.name}
-                price={product.price}
-                image={product.image}
-              />
-            ))}
-          </div>
+          {session && (
+            <div className="mt-8">
+              <ReviewForm />
+            </div>
+          )}
         </div>
       </main>
-
-      <footer className="bg-[#f3f5d8] py-12 mt-12">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="font-bold text-gray-800 mb-4">CropSync</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Fresh, Organic, and Healthy
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-4">Information</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-600 hover:text-green-600">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-600 hover:text-green-600">
-                    Products
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-4">Company</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-600 hover:text-green-600">
-                    Our Farmers
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-800 mb-4">Contact</h3>
-              <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="#" className="text-gray-600 hover:text-green-600">
-                    Support
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <Separator className="my-8" />
-          <div className="text-sm text-gray-600 text-center">
-            <p>2023 all Right Reserved Term of use CropSync</p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

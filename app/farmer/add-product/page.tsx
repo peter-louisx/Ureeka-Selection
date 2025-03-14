@@ -500,7 +500,7 @@ export default function AddProductPage() {
         <div className="container mx-auto px-4">
           <div className="text-center">
             <p className="text-sm text-gray-600">
-              © 2023 CropSync. All rights reserved.
+              © 2023 CropFresh. All rights reserved.
             </p>
           </div>
         </div>
