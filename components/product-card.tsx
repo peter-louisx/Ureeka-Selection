@@ -5,16 +5,16 @@ export default function ProductCard({
   name,
   price,
   image,
-  unit,
+  slug,
 }: {
   name: string;
   price: number;
   image: string;
-  unit: string;
+  slug: string;
 }) {
   return (
     <Link
-      href={"/product/afaf"}
+      href={"/product/" + slug}
       className="rounded-lg overflow-hidden border border-gray-200 shadow-md flex flex-col"
     >
       <div className="p-4 flex-1 flex flex-col">

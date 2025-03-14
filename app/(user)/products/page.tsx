@@ -1,72 +1,33 @@
+"use client";
+
 import ProductCard from "@/components/product-card";
-// Product data
-const products = [
-  {
-    id: 1,
-    name: "Fresh Peach",
-    price: 4.99,
-    image: "/products/peach.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 2,
-    name: "Pineapple",
-    price: 3.5,
-    image: "/products/pineapple.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 3,
-    name: "Organic Lemons",
-    price: 2.22,
-    image: "/products/lime.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 4,
-    name: "Fresh Peach",
-    price: 4.99,
-    image: "/products/peach.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 5,
-    name: "Fresh Broccoli",
-    price: 3.0,
-    image: "/products/brocoli.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 6,
-    name: "Fresh Cauliflower",
-    price: 2.5,
-    image: "/products/cauliflower.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 7,
-    name: "Green Lettuce",
-    price: 1.99,
-    image: "/products/lettuce.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 8,
-    name: "Cucumber",
-    price: 1.5,
-    image: "/products/cucumber.png",
-    unit: "1 Kg",
-  },
-  {
-    id: 9,
-    name: "Bell Pepper Red",
-    price: 2.99,
-    image: "/products/paprica.png",
-    unit: "1 Kg",
-  },
-];
+import { useState, useEffect } from "react";
+import supabase from "@/supabase";
 
 export default function Page() {
+  const [products, setProducts] = useState<
+    {
+      id: number;
+      name: string;
+      price: number;
+      image: string;
+      unit: string;
+      slug: string;
+    }[]
+  >([]);
+
+  const fetchProducts = async () => {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, name, price, image, slug");
+
+    setProducts(data as any);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   return (
     <div className="flex flex-col md:flex-row gap-8">
       {/* Categories Sidebar */}
@@ -91,7 +52,7 @@ export default function Page() {
               name={product.name}
               price={product.price}
               image={product.image}
-              unit={product.unit}
+              slug={product.slug}
             />
           ))}
         </div>
