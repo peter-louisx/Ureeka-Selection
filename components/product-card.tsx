@@ -23,7 +23,9 @@ export default function ProductCard({
         </div>
         <h3 className="font-semibold text-gray-800">{name}</h3>
         <div className="mt-auto flex items-center justify-between">
-          <span className="font-bold text-gray-800">${price.toFixed(2)}</span>
+          <span className="font-bold text-gray-800">
+            Rp. {price.toLocaleString("id-ID")}
+          </span>
         </div>
       </div>
     </Link>
