@@ -32,6 +32,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+NEXT_PUBLIC_SUPABASE_URL = https://vesvlvykfnkqxtpekfbn.supabase.co
+NEXT_PUBLIC_SUPABASE_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZlc3ZsdnlrZm5rcXh0cGVrZmJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA2Nzg0NTYsImV4cCI6MjA1NjI1NDQ1Nn0.hNZVOsNsMuL50v78IxUtOS-c4BUP40Dogef5b5SNJZE
 
 # vercel
 .vercel
