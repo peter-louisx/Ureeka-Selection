@@ -98,7 +98,7 @@ export default function About() {
                 more efficient and fair agricultural marketplace.
               </p>
               <p className="text-lg text-gray-600 mb-4">
-                Our founder, Jane Smith, grew up on a family farm and witnessed firsthand the challenges farmers face in
+                Our founder, Louis Andrew, grew up on a family farm and witnessed firsthand the challenges farmers face in
                 getting fair prices for their produce. After working in agricultural technology for over a decade, she
                 decided to create a solution.
               </p>
@@ -120,11 +120,11 @@ export default function About() {
           </div>
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
             <div className="text-4xl font-bold text-green-600 mb-2">50k+</div>
-            <div className="text-gray-600">Happy Customers</div>
+            <div className="text-gray-600">Customers</div>
           </div>
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
             <div className="text-4xl font-bold text-green-600 mb-2">95%</div>
-            <div className="text-gray-600">Customer Satisfaction</div>
+            <div className="text-gray-600">Satisfaction</div>
           </div>
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
             <div className="text-4xl font-bold text-green-600 mb-2">100%</div>
