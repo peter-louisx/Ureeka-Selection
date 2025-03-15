@@ -124,7 +124,7 @@ export default function About() {
           </div>
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
             <div className="text-4xl font-bold text-green-600 mb-2">95%</div>
-            <div className="text-gray-600">customer satisfaction</div>
+            <div className="text-gray-600">Customer Satisfaction</div>
           </div>
           <div className="text-center p-6 bg-white rounded-lg shadow-sm">
             <div className="text-4xl font-bold text-green-600 mb-2">100%</div>
