@@ -13,8 +13,9 @@ export default function About() {
             <br />
           </h1>
           <span className="text-4xl md:text-2.5xl font-bold text-white mb-2">
-            Our job is connecting hard working producers with good, honest
-            clients anywhere, everywhere.
+          CropFresh connects hardworking producers with honest clients, anywhere, anytime.
+           We ensure high-quality produce reaches consumers in a fair and transparent way. 
+           Trust and quality are our top priorities.
           </span>
         </div>
       </div>
